@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <defs>
+    <linearGradient id="cupGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C85A2A"/>
+      <stop offset="100%" style="stop-color:#D4A574"/>
+    </linearGradient>
+    <linearGradient id="steamGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#D4A574;stop-opacity:0.8"/>
+      <stop offset="100%" style="stop-color:#D4A574;stop-opacity:0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#2C1810" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="400" cy="380" r="220" fill="#2C1810" filter="url(#shadow)"/>
+  <circle cx="400" cy="380" r="210" fill="#1a0f0a"/>
+  <circle cx="400" cy="380" r="200" fill="none" stroke="#D4A574" stroke-width="2" opacity="0.4"/>
+  
+  <!-- Coffee cup body -->
+  <path d="M310 340 L320 460 Q320 490 350 490 L450 490 Q480 490 480 460 L490 340 Z" fill="url(#cupGrad)" filter="url(#shadow)"/>
+  
+  <!-- Cup rim highlight -->
+  <ellipse cx="400" cy="340" rx="92" ry="15" fill="#D4A574" opacity="0.3"/>
+  <path d="M308 340 Q400 320 492 340 Q400 355 308 340 Z" fill="#e8c9a0"/>
+  
+  <!-- Coffee surface -->
+  <ellipse cx="400" cy="345" rx="85" ry="12" fill="#8B4513"/>
+  <ellipse cx="400" cy="343" rx="70" ry="8" fill="#A0522D" opacity="0.6"/>
+  
+  <!-- Latte art heart -->
+  <path d="M400 355 Q385 340 390 332 Q395 325 400 332 Q405 325 410 332 Q415 340 400 355 Z" fill="#D4A574" opacity="0.7"/>
+  
+  <!-- Cup handle -->
+  <path d="M490 360 Q540 360 540 400 Q540 440 490 440" fill="none" stroke="url(#cupGrad)" stroke-width="14" stroke-linecap="round"/>
+  
+  <!-- Plate / saucer -->
+  <ellipse cx="400" cy="495" rx="120" ry="18" fill="#D4A574" opacity="0.3"/>
+  <ellipse cx="400" cy="492" rx="110" ry="14" fill="none" stroke="#D4A574" stroke-width="1.5" opacity="0.5"/>
+  
+  <!-- Steam lines -->
+  <path d="M360 310 Q355 285 365 265 Q375 245 365 225" fill="none" stroke="url(#steamGrad)" stroke-width="3" stroke-linecap="round" opacity="0.6">
+    <animate attributeName="d" dur="3s" repeatCount="indefinite" values="M360 310 Q355 285 365 265 Q375 245 365 225;M360 310 Q365 285 355 265 Q345 245 355 225;M360 310 Q355 285 365 265 Q375 245 365 225"/>
+  </path>
+  <path d="M400 305 Q395 275 405 250 Q415 225 405 200" fill="none" stroke="url(#steamGrad)" stroke-width="3.5" stroke-linecap="round" opacity="0.7">
+    <animate attributeName="d" dur="2.5s" repeatCount="indefinite" values="M400 305 Q395 275 405 250 Q415 225 405 200;M400 305 Q405 275 395 250 Q385 225 395 200;M400 305 Q395 275 405 250 Q415 225 405 200"/>
+  </path>
+  <path d="M440 310 Q435 290 445 270 Q455 250 445 230" fill="none" stroke="url(#steamGrad)" stroke-width="2.5" stroke-linecap="round" opacity="0.5">
+    <animate attributeName="d" dur="3.5s" repeatCount="indefinite" values="M440 310 Q435 290 445 270 Q455 250 445 230;M440 310 Q445 290 435 270 Q425 250 435 230;M440 310 Q435 290 445 270 Q455 250 445 230"/>
+  </path>
+  
+  <!-- Small decorative dots -->
+  <circle cx="280" cy="300" r="3" fill="#D4A574" opacity="0.3"/>
+  <circle cx="520" cy="320" r="2.5" fill="#D4A574" opacity="0.25"/>
+  <circle cx="300" cy="460" r="2" fill="#D4A574" opacity="0.2"/>
+  <circle cx="510" cy="450" r="3" fill="#D4A574" opacity="0.2"/>
+  
+  <!-- Fork and knife small icons on sides -->
+  <g transform="translate(275, 400) rotate(-20)" opacity="0.3">
+    <rect x="-2" y="-30" width="4" height="35" rx="2" fill="#D4A574"/>
+    <path d="M-6 -30 Q-2 -45 2 -30" fill="none" stroke="#D4A574" stroke-width="2"/>
+  </g>
+  <g transform="translate(530, 390) rotate(15)" opacity="0.3">
+    <rect x="-2" y="-25" width="4" height="35" rx="2" fill="#D4A574"/>
+    <circle cx="0" cy="-28" r="6" fill="none" stroke="#D4A574" stroke-width="2"/>
+  </g>
+  
+  <!-- Main title: FASTO -->
+  <text x="400" y="610" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="88" font-weight="bold" fill="#2C1810" letter-spacing="18">FASTO</text>
+  <text x="400" y="610" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="88" font-weight="bold" fill="url(#cupGrad)" letter-spacing="18" opacity="0.15">FASTO</text>
+  
+  <!-- Decorative line -->
+  <line x1="220" y1="635" x2="580" y2="635" stroke="#D4A574" stroke-width="1.5" opacity="0.6"/>
+  <circle cx="400" cy="635" r="4" fill="#C85A2A"/>
+  <line x1="370" y1="635" x2="430" y2="635" stroke="#C85A2A" stroke-width="2.5"/>
+  
+  <!-- Subtitle: BREW & BITES -->
+  <text x="400" y="675" text-anchor="middle" font-family="'Trebuchet MS', 'Segoe UI', sans-serif" font-size="36" fill="#C85A2A" letter-spacing="14" font-weight="600">BREW &amp; BITES</text>
+  
+  <!-- Tagline -->
+  <text x="400" y="720" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="16" fill="#8B7355" letter-spacing="6" font-style="italic">COFFEE • FOOD • VIBES</text>
+  
+  <!-- Outer decorative corners -->
+  <path d="M120 120 L120 160 M120 120 L160 120" fill="none" stroke="#D4A574" stroke-width="2" opacity="0.3"/>
+  <path d="M680 120 L680 160 M680 120 L640 120" fill="none" stroke="#D4A574" stroke-width="2" opacity="0.3"/>
+  <path d="M120 740 L120 700 M120 740 L160 740" fill="none" stroke="#D4A574" stroke-width="2" opacity="0.3"/>
+  <path d="M680 740 L680 700 M680 740 L640 740" fill="none" stroke="#D4A574" stroke-width="2" opacity="0.3"/>
+</svg>

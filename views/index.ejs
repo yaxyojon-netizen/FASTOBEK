@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Fasto — NFC Onlayn Menyu</title>
+  <meta name="description" content="Fasto restorani NFC onlayn menyusi. Stolingizdan to'g'ridan-to'g'ri buyurtma bering!">
+  <link rel="icon" type="image/png" href="/images/fasto_logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Top Sticky Header -->
+  <header class="nfc-header">
+    <div class="header-container">
+      <div class="brand-box">
+        <img src="/images/fasto_logo.png" alt="Fasto Logo" class="fasto-logo-img">
+        <div class="brand-tagline">Fresh Drinks • Good Mood</div>
+      </div>
+      
+      <div class="header-actions">
+        <!-- Table Selector Badge -->
+        <button class="table-badge-btn" onclick="openTableModal()" title="Stol raqamini o'zgartirish">
+          <i class="fas fa-chair"></i>
+          <span>Stol <strong id="currentTableNum"><%= defaultTable %></strong></span>
+          <i class="fas fa-chevron-down" style="font-size: 0.7rem; opacity: 0.7;"></i>
+        </button>
+
+        <!-- Waiter Call button -->
+        <button class="waiter-call-btn" onclick="openWaiterModal()" title="Ofitsiant chaqirish">
+          <i class="fas fa-bell"></i>
+          <span class="btn-text">Ofitsiant</span>
+        </button>
+
+        <!-- Cart Header Button -->
+        <button class="cart-header-btn" onclick="openCartModal()" title="Savatcha">
+          <i class="fas fa-shopping-basket"></i>
+          <span class="cart-counter-badge" id="headerCartCount">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Search Input -->
+    <div class="search-bar-container">
+      <div class="search-box">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" id="searchInput" placeholder="Menyudan qidirish (lavash, kofe, burger, strips...)" autocomplete="off">
+        <button id="clearSearchBtn" onclick="clearSearch()" class="clear-search-btn" style="display:none;">✕</button>
+      </div>
+    </div>
+
+    <!-- Category Tabs Navigation -->
+    <nav class="categories-nav">
+      <div class="categories-scroll" id="categoryTabs">
+        <button class="cat-pill active" data-cat="all">
+          <span class="cat-icon">🍽️</span> Barchasi
+        </button>
+        <button class="cat-pill" data-cat="fastfood">
+          <span class="cat-icon">🌯</span> FastFood & Lavash
+        </button>
+        <button class="cat-pill" data-cat="chicken">
+          <span class="cat-icon">🍗</span> Tovuq (Chicken)
+        </button>
+        <button class="cat-pill" data-cat="coffee">
+          <span class="cat-icon">☕</span> Kofe (Coffee)
+        </button>
+        <button class="cat-pill" data-cat="drinks">
+          <span class="cat-icon">🥤</span> Ichimliklar & Muzqaymoq
+        </button>
+        <button class="cat-pill" data-cat="sauces">
+          <span class="cat-icon">🥫</span> Souslar
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Container -->
+  <main class="menu-main">
+    <!-- Notice Bar for Table -->
+    <div class="table-info-banner">
+      <div class="banner-content">
+        <span>📍 Siz <strong>#<span id="bannerTableNum"><%= defaultTable %></span>-stol</strong> buyurtmasini bermoqdasiz</span>
+        <button onclick="openTableModal()" class="change-table-link">O'zgartirish</button>
+      </div>
+    </div>
+
+    <!-- Original Menus Viewer Buttons -->
+    <div class="posters-banner">
+      <div class="posters-title"><i class="fas fa-images"></i> Asl menyu rasmlari:</div>
+      <div class="posters-links">
+        <button onclick="viewPoster('/images/menu_fastfood.png', 'FastFood & Lavash Menyusi')">🌯 FastFood</button>
+        <button onclick="viewPoster('/images/menu_chicken.png', 'Chicken (Tovuq) Menyusi')">🍗 Chicken</button>
+        <button onclick="viewPoster('/images/menu_coffee.png', 'Kofe Menyusi')">☕ Kofe</button>
+        <button onclick="viewPoster('/images/menu_drinks_ice.png', 'Ichimliklar & Muzqaymoq')">🥤 Ichimliklar</button>
+      </div>
+    </div>
+
+    <!-- Menu Items List Section -->
+    <section class="menu-section" id="menuContainer">
+      <!-- Items dynamically populated via JavaScript -->
+    </section>
+  </main>
+
+  <!-- ================= STICKY FLOATING CART BAR (BOTTOM) ================= -->
+  <div class="floating-cart-bar" id="floatingCartBar" onclick="openCartModal()">
+    <div class="cart-bar-left">
+      <div class="cart-bar-icon-wrap">
+        <i class="fas fa-shopping-basket"></i>
+        <span class="cart-bar-count" id="floatingCartCount">0</span>
+      </div>
+      <div class="cart-bar-text">
+        <span class="cart-bar-label">Savatcha</span>
+        <strong class="cart-bar-total" id="floatingCartTotal">0 so'm</strong>
+      </div>
+    </div>
+    <div class="cart-bar-right">
+      <span>Buyurtma berish</span>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </div>
+
+  <!-- ================= CART / ORDER MODAL (BOTTOM SHEET) ================= -->
+  <div class="modal-backdrop" id="cartModalBackdrop" onclick="closeCartModal(event)">
+    <div class="bottom-sheet cart-sheet" onclick="event.stopPropagation()">
+      <div class="sheet-drag-handle"></div>
+      
+      <div class="sheet-header">
+        <div class="sheet-title">
+          <i class="fas fa-shopping-basket" style="color: var(--fasto-red);"></i>
+          <h3>Savatcha</h3>
+          <span class="table-tag">Stol #<strong id="cartModalTable"><%= defaultTable %></strong></span>
+        </div>
+        <button class="sheet-close-btn" onclick="closeCartModal()">✕</button>
+      </div>
+
+      <div class="sheet-body">
+        <!-- Cart Items List -->
+        <div class="cart-items-list" id="cartItemsList">
+          <!-- Rendered in JS -->
+        </div>
+
+        <!-- Quick Sauce / Addon Upsell -->
+        <div class="cart-addons-section">
+          <div class="addons-heading">
+            <span>🥫 Sous qo'shasizmi?</span>
+            <small>har biri 3 000 so'm</small>
+          </div>
+          <div class="addons-chips">
+            <button class="addon-chip" onclick="quickAddSauce('Sous Ketchup', 3000, '/images/sauce_ketchup.png')">+ Ketchup</button>
+            <button class="addon-chip" onclick="quickAddSauce('Sous Sirniy', 3000, '/images/sauce_sirniy.png')">+ Pishloqli</button>
+            <button class="addon-chip" onclick="quickAddSauce('Sous Chisnochiniy', 3000, '/images/sauce_chisnochniy.png')">+ Sarimsoqli</button>
+            <button class="addon-chip" onclick="quickAddSauce('Xalapeniyo', 3000, '/images/sauce_xalapeniyo.png')">+ Xalapenyo</button>
+          </div>
+        </div>
+
+        <!-- Order Notes / Comments -->
+        <div class="cart-notes-group">
+          <label for="orderNotes"><i class="fas fa-comment-alt"></i> Oshxona uchun izoh (ixtiyoriy):</label>
+          <textarea id="orderNotes" rows="2" placeholder="Masalan: Achchiq bo'lmasin, muz solinmasin, piyozsiz..."></textarea>
+        </div>
+
+        <!-- Payment method selection -->
+        <div class="payment-method-group">
+          <label><i class="fas fa-wallet"></i> To'lov usuli:</label>
+          <div class="payment-options">
+            <label class="pay-option">
+              <input type="radio" name="payMethod" value="Naqd pul" checked>
+              <span>💵 Naqd pul</span>
+            </label>
+            <label class="pay-option">
+              <input type="radio" name="payMethod" value="Karta (Terminal / Click / Payme)">
+              <span>💳 Karta / Click</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Price Summary -->
+        <div class="cart-bill-summary">
+          <div class="bill-row">
+            <span>Mahsulotlar:</span>
+            <span id="summarySubtotal">0 so'm</span>
+          </div>
+          <div class="bill-row total-row">
+            <strong>Jami to'lov:</strong>
+            <strong class="total-price" id="summaryTotal">0 so'm</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sheet Footer Submit -->
+      <div class="sheet-footer">
+        <button class="submit-order-btn" id="submitOrderBtn" onclick="submitOrder()">
+          <span class="btn-label">Buyurtmani tasdiqlash</span>
+          <span class="btn-price-preview" id="submitBtnPrice">0 so'm</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TABLE SELECTION MODAL ================= -->
+  <div class="modal-backdrop" id="tableModalBackdrop" onclick="closeTableModal(event)">
+    <div class="popup-card" onclick="event.stopPropagation()">
+      <div class="popup-header">
+        <h3>📍 Stol raqamini tanlang</h3>
+        <button class="sheet-close-btn" onclick="closeTableModal()">✕</button>
+      </div>
+      <p class="popup-desc">Siz o'tirgan stol raqamini tanlang yoki kiriting:</p>
+      
+      <div class="tables-grid" id="tablesGrid">
+        <!-- 1..24 numbers -->
+      </div>
+
+      <div class="custom-table-input">
+        <label>Boshqa stol raqami:</label>
+        <div class="input-with-btn">
+          <input type="number" id="customTableInput" placeholder="Masalan: 25" min="1" max="99">
+          <button onclick="setCustomTable()">Saqlash</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= CALL WAITER MODAL ================= -->
+  <div class="modal-backdrop" id="waiterModalBackdrop" onclick="closeWaiterModal(event)">
+    <div class="popup-card" onclick="event.stopPropagation()">
+      <div class="popup-header">
+        <h3>🔔 Ofitsiantni chaqirish</h3>
+        <button class="sheet-close-btn" onclick="closeWaiterModal()">✕</button>
+      </div>
+      <p class="popup-desc">Stol <strong>#<span id="waiterTableNum"><%= defaultTable %></span></strong> uchun sababni tanlang:</p>
+
+      <div class="waiter-reasons">
+        <button class="reason-btn" onclick="callWaiter('Ofitsiant kerak')">
+          <i class="fas fa-hand-paper"></i> Ofitsiant kerak
+        </button>
+        <button class="reason-btn" onclick="callWaiter('Hisobni keltiring (Chek)')">
+          <i class="fas fa-receipt"></i> Hisobni keltiring (Chek)
+        </button>
+        <button class="reason-btn" onclick="callWaiter('Salfetka / Suv kerak')">
+          <i class="fas fa-glass-water"></i> Salfetka / Suv keltiring
+        </button>
+        <button class="reason-btn" onclick="callWaiter('Stolni tozalash')">
+          <i class="fas fa-broom"></i> Stolni tozalash
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= POSTER VIEWER MODAL ================= -->
+  <div class="modal-backdrop" id="posterModalBackdrop" onclick="closePosterModal(event)">
+    <div class="poster-card" onclick="event.stopPropagation()">
+      <div class="poster-header">
+        <h4 id="posterModalTitle">Menyu</h4>
+        <button class="sheet-close-btn" onclick="closePosterModal()">✕</button>
+      </div>
+      <div class="poster-body">
+        <img id="posterModalImg" src="" alt="Menyu posteri">
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= ORDER SUCCESS MODAL ================= -->
+  <div class="modal-backdrop" id="orderSuccessBackdrop">
+    <div class="popup-card success-card">
+      <div class="success-icon-wrap">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <h2>Buyurtmangiz qabul qilindi!</h2>
+      <div class="success-order-id">
+        Buyurtma raqami: <strong id="successOrderId">#FST-1234</strong>
+      </div>
+      <p class="success-details">
+        Stol: <strong>#<span id="successTableNum"><%= defaultTable %></span></strong><br>
+        Jami to'lov: <strong id="successTotal">0 so'm</strong>
+      </p>
+      <div class="success-status-box">
+        <i class="fas fa-fire-burner pulse-anim"></i>
+        <span>Oshxonada tayyorlanmoqda...</span>
+      </div>
+      <p class="success-note">Tez orada ofitsiant buyurtmangizni stolingizga keltiradi. Yoqimli ishtaha!</p>
+      <button class="btn-success-close" onclick="closeSuccessModal()">Yangi buyurtma / Menyu</button>
+    </div>
+  </div>
+
+  <!-- Toast Notification Message -->
+  <div class="nfc-toast" id="nfcToast">
+    <i class="fas fa-check" id="toastIcon"></i>
+    <span id="toastMsg">Xabar</span>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Fasto — Oshxona & Admin Paneli</title>
+  <link rel="icon" type="image/png" href="/images/fasto_logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+  <!-- ================= PIN LOCK SCREEN (HAR SAFAR KIRGANDA CHIQADI) ================= -->
+  <div class="lock-overlay" id="lockOverlay">
+    <div class="lock-card" id="lockCard">
+      <img src="/images/fasto_logo.png" alt="Fasto" class="lock-logo">
+      <h2 class="lock-title">Restoran Boshqaruvi</h2>
+      <p class="lock-subtitle">Oshxona panelini ochish uchun PIN-kodni kiriting:</p>
+
+      <!-- 4 PIN dots -->
+      <div class="lock-pin-dots">
+        <div class="pin-dot" id="pDot0"></div>
+        <div class="pin-dot" id="pDot1"></div>
+        <div class="pin-dot" id="pDot2"></div>
+        <div class="pin-dot" id="pDot3"></div>
+      </div>
+
+      <div class="lock-error-msg" id="lockErrorMsg"></div>
+
+      <!-- Numpad buttons -->
+      <div class="lock-numpad">
+        <button class="lock-num-btn" onclick="lockInput('1')">1</button>
+        <button class="lock-num-btn" onclick="lockInput('2')">2</button>
+        <button class="lock-num-btn" onclick="lockInput('3')">3</button>
+        <button class="lock-num-btn" onclick="lockInput('4')">4</button>
+        <button class="lock-num-btn" onclick="lockInput('5')">5</button>
+        <button class="lock-num-btn" onclick="lockInput('6')">6</button>
+        <button class="lock-num-btn" onclick="lockInput('7')">7</button>
+        <button class="lock-num-btn" onclick="lockInput('8')">8</button>
+        <button class="lock-num-btn" onclick="lockInput('9')">9</button>
+        <button class="lock-num-btn lock-btn-action" onclick="lockClear()">C</button>
+        <button class="lock-num-btn" onclick="lockInput('0')">0</button>
+        <button class="lock-num-btn lock-btn-action" onclick="lockBackspace()"><i class="fas fa-backspace"></i></button>
+      </div>
+
+      <div class="lock-footer">
+        <a href="/" class="lock-back-link"><i class="fas fa-arrow-left"></i> Mijozlar menyusiga qaytish</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TOP ADMIN HEADER ================= -->
+  <header class="admin-header">
+    <div class="header-left">
+      <img src="/images/fasto_logo.png" alt="Fasto Logo" class="admin-logo">
+      <div class="admin-title-wrap">
+        <h2>Oshxona & Buyurtmalar Boshqaruvi</h2>
+        <span class="live-pill"><span class="live-dot"></span> LIVE • Jonli efir</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button class="sound-toggle-btn" id="soundToggleBtn" onclick="toggleSound()">
+        <i class="fas fa-volume-up" id="soundIcon"></i>
+        <span id="soundText">Ovoz</span>
+      </button>
+
+      <a href="/" target="_blank" class="view-menu-btn" title="Mijozlar menyusini ochish">
+        <i class="fas fa-external-link-alt"></i> Menyu
+      </a>
+
+      <!-- Instant Lock Button -->
+      <button class="lock-screen-btn" onclick="lockScreenNow()" title="Ekranni qulflash">
+        <i class="fas fa-lock"></i> Qulflash
+      </button>
+
+      <button class="refresh-btn" onclick="fetchAdminData()" title="Yangilash">
+        <i class="fas fa-sync-alt" id="refreshIcon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="admin-container">
+
+    <!-- KPI Stats Cards -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon icon-orders"><i class="fas fa-receipt"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Bugungi buyurtmalar</span>
+          <strong class="stat-value" id="statTotalOrders">0</strong>
+        </div>
+      </div>
+
+      <div class="stat-card active-card">
+        <div class="stat-icon icon-active"><i class="fas fa-fire-burner"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Faol buyurtmalar</span>
+          <strong class="stat-value" id="statActiveOrders">0</strong>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon icon-revenue"><i class="fas fa-wallet"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Bugungi tushum</span>
+          <strong class="stat-value" id="statRevenue">0 so'm</strong>
+        </div>
+      </div>
+
+      <div class="stat-card calls-card" id="callsStatCard">
+        <div class="stat-icon icon-calls"><i class="fas fa-bell"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Ofitsiant chaqiruvlari</span>
+          <strong class="stat-value" id="statCalls">0</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Urgent Waiter Calls Alert Box -->
+    <section class="waiter-alerts-section" id="waiterAlertsSection" style="display:none;">
+      <div class="alerts-header">
+        <div class="alerts-title">
+          <i class="fas fa-bell ringing-bell"></i>
+          <h3>Stoldan chaqiruvlar (Ofitsiant kerak):</h3>
+        </div>
+      </div>
+      <div class="alerts-list" id="waiterAlertsList">
+        <!-- populated in JS -->
+      </div>
+    </section>
+
+    <!-- Orders Filter Tabs -->
+    <div class="orders-filter-bar">
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all" onclick="setOrderFilter('all')">
+          Barchasi (<span id="countAll">0</span>)
+        </button>
+        <button class="filter-tab filter-new" data-filter="new" onclick="setOrderFilter('new')">
+          🔴 Yangi (<span id="countNew">0</span>)
+        </button>
+        <button class="filter-tab filter-cooking" data-filter="cooking" onclick="setOrderFilter('cooking')">
+          🟡 Tayyorlanmoqda (<span id="countCooking">0</span>)
+        </button>
+        <button class="filter-tab filter-ready" data-filter="ready" onclick="setOrderFilter('ready')">
+          🟢 Tayyor (<span id="countReady">0</span>)
+        </button>
+        <button class="filter-tab filter-completed" data-filter="completed" onclick="setOrderFilter('completed')">
+          ⚪ Yetkazildi (<span id="countCompleted">0</span>)
+        </button>
+      </div>
+
+      <div class="search-orders-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="orderSearchInput" placeholder="Stol yoki buyurtma ID bo'yicha qidirish..." oninput="renderOrders()">
+      </div>
+    </div>
+
+    <!-- Orders Cards Grid / Board -->
+    <section class="orders-board" id="ordersBoard">
+      <!-- populated in JS -->
+    </section>
+  </main>
+
+  <!-- Printable Receipt Modal (Kassa cheki) -->
+  <div class="receipt-modal-backdrop" id="receiptBackdrop" onclick="closeReceipt(event)">
+    <div class="receipt-card" onclick="event.stopPropagation()">
+      <div class="receipt-actions no-print">
+        <button class="btn-print" onclick="window.print()">
+          <i class="fas fa-print"></i> Chekni chiqarish (Print)
+        </button>
+        <button class="btn-close-receipt" onclick="closeReceipt()">✕</button>
+      </div>
+
+      <!-- Printable Area -->
+      <div class="receipt-paper" id="receiptPaper">
+        <!-- Rendered in JS -->
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

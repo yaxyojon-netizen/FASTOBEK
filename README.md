@@ -43,3 +43,22 @@ npm start
 * 📱 **Mijozlar NFC menyusi (5-stol):** [http://localhost:3000/?table=5](http://localhost:3000/?table=5)
 * 👨‍🍳 **Oshxona & Admin boshqaruv paneli:** [http://localhost:3000/admin](http://localhost:3000/admin)
   * 🔑 **Admin PIN-kodi:** `7777`
+
+---
+
+## 🌍 Render’da internetga joylash
+
+Loyiha Render web service va PostgreSQL bilan ishlashga tayyorlangan. Mijozlar havolani boshqa Wi-Fi yoki mobil internetdan ham ochishi mumkin.
+
+1. O‘zgarishlarni GitHub’dagi repoga joylang.
+2. Render’da PostgreSQL database yarating.
+3. Render’da **New > Blueprint** orqali repozitoriyani ulang va `render.yaml` yordamida web service yarating. Yoki **New > Web Service** ochib, build command sifatida `npm ci`, start command sifatida `npm start` kiriting.
+4. Web service’ning **Environment** bo‘limida quyidagilarni sozlang:
+   - `NODE_ENV` = `production`
+   - `DATABASE_URL` = PostgreSQL bazasining **Internal Database URL** manzili
+   - `ADMIN_PIN` = o‘zingiz tanlagan 4 xonali maxfiy PIN (standart `7777` dan foydalanmang)
+5. Deploy muvaffaqiyatli tugagach, Render bergan `https://...onrender.com` havolani mijozlarga yuboring.
+
+PostgreSQL ulanganida buyurtmalar va ofitsiant chaqiruvlari bazada saqlanadi. Lokal dasturlashda baza sozlanmagan bo‘lsa, ma’lumotlar faqat server ishlayotgan paytda saqlanadi. Render’da database yaratishdan oldin tarif va to‘lov shartlarini tekshiring.
+
+> **Eslatma:** `/admin` paneli internetdan ochiq bo‘ladi. Deploy vaqtida `ADMIN_PIN` ni albatta o‘zgartiring va uni mijozlarga yubormang.

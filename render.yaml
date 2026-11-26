@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: fasto-brew-and-bites
+    runtime: node
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: ADMIN_PIN
+        sync: false
