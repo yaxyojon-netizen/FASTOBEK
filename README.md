@@ -37,15 +37,6 @@ npm start
 
 ---
 
-## 🌐 Brauzerda ochish:
-
-* 📱 **Mijozlar NFC menyusi (1-stol):** [http://localhost:3000/?table=1](http://localhost:3000/?table=1)
-* 📱 **Mijozlar NFC menyusi (5-stol):** [http://localhost:3000/?table=5](http://localhost:3000/?table=5)
-* 👨‍🍳 **Oshxona & Admin boshqaruv paneli:** [http://localhost:3000/admin](http://localhost:3000/admin)
-  * 🔑 **Admin PIN-kodi:** `7777`
-
----
-
 ## 🌍 Render’da internetga joylash
 
 Loyiha Render web service va PostgreSQL bilan ishlashga tayyorlangan. Mijozlar havolani boshqa Wi-Fi yoki mobil internetdan ham ochishi mumkin.
